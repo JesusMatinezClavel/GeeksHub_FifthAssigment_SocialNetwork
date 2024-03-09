@@ -1,15 +1,22 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
-import jwt  from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import { userAge } from "../utils/userAge.js";
 
 
 export const register = async (req, res) => {
     try {
-        const email = req.body.email
-        const password = req.body.password
+        const { firstName, lastName, bio, nickName, email, passwordBody, birthDate } = req.body
 
+        if (!nickName || !email || !passwordBody || !birthDate) {
+            return res.status(400).json({
+                success: false,
+                message: "Name, email or password are invalid!"
+            })
+        }
 
-        if (password.length < 6 || password.length > 10) {
+        const date = new Date(birthDate)
+        if (passwordBody.length < 6 || passwordBody.length > 10) {
             return res.status(400).json({
                 success: false,
                 message: "Password must contain between 6 and 10 characters"
@@ -26,37 +33,53 @@ export const register = async (req, res) => {
                 }
             )
         }
-        const passwordEncrypted = bcrypt.hashSync(password, 5)
+        const passwordEncrypted = bcrypt.hashSync(passwordBody, 5)
 
         const user = await User.findOne({
             email: email
         })
-        console.log(user);
 
-        if(user){
+        if (user) {
             return res.status(400).json({
                 success: false,
                 message: `email ${email} is already in use!`
             })
         }
+        let age = userAge(date)
+        console.log(age);
 
         const newUser = await User.create(
             {
-                email: email,
-                password: passwordEncrypted
+                firstName,
+                lastName,
+                bio,
+                nickName,
+                email,
+                password: passwordEncrypted,
+                birthDate: date,
+                age
             }
         )
+        const restProfile = {
+            name: `${firstName} ${lastName}`,
+            nickName,
+            age,         
+            bio,
+            birthDate: date,
+            email,
+        }
 
         res.status(201).json({
             success: true,
             message: "User registered succesfully",
-            data: newUser
+            data: restProfile
         })
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             success: false,
             message: "User cant be registered",
-            error: error
+            error: error.message
         })
     }
 }
