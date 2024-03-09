@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { userAge } from "../utils/userAge.js";
+import { userAge } from "../../utils/userAge.js";
 
 
 const UserSchema = new Schema(
