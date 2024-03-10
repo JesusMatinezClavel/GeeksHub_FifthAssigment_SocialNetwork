@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { auth } from "../../middlewares/auth.middleware.js";
-import { follow, getUser } from "./user.controller.js";
+import { follow, getUser, unFollow } from "./user.controller.js";
 
 const router = Router();
 
 router.get('/', getUser)
-router.put('/', auth, follow)
+router.put('/follow/', auth, follow)
+router.put('/unfollow/', auth, unFollow)
 
 
 export default router
