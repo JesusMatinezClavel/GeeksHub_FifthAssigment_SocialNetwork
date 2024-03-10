@@ -1,5 +1,4 @@
 import { Schema, model } from "mongoose";
-import { userAge } from "../../utils/userAge.js";
 
 
 const UserSchema = new Schema(
@@ -52,14 +51,14 @@ const UserSchema = new Schema(
             type: Boolean,
             default: false
         },
-        followers: {
+        followers: [{
             type: Schema.Types.ObjectId,
             ref: 'User'
-        },
-        followed: {
+        }],
+        followed: [{
             type: Schema.Types.ObjectId,
             ref: 'User'
-        }
+        }]
     },
     {
         timestamps: true,
