@@ -18,7 +18,7 @@ export const register = async (req, res) => {
             })
         }
 
-        if (!profileImg || typeof (profileImg) !== 'string'||!profileImg.match(/\.(jpeg|jpg|gif|png)$/i)) {
+        if (!profileImg || typeof (profileImg) !== 'string' || !profileImg.match(/\.(jpeg|jpg|gif|png)$/i)) {
             profileImg = User.call(profileImg).profileImg
         }
 
@@ -89,7 +89,7 @@ export const register = async (req, res) => {
 
         tryStatus(res, `user ${nickName} registered!`, restProfile)
     } catch (error) {
-        catchStatus(res,`CANNOT REGISTER`, error.message)
+        catchStatus(res, `CANNOT REGISTER`, error.message)
     }
 }
 
@@ -159,14 +159,14 @@ export const logIn = async (req, res) => {
 
         tryStatus(res, `user ${user.nickName} loged in!`, token)
     } catch (error) {
-        catchStatus(res,`CANNOT LOGIN`, error)
+        catchStatus(res, `CANNOT LOGIN`, error)
     }
 }
 
 export const logOut = async (req, res) => {
     try {
-        const userID = req.tokenData.userId
-        await User.findOneAndUpdate(
+        const userID = req.tokenData.userID
+        const user = await User.findOneAndUpdate(
             {
                 _id: userID
             },
@@ -175,10 +175,10 @@ export const logOut = async (req, res) => {
             }
         )
 
-        
-        tryStatus(res, `user ${user.nickName} loged in!`)
+
+        tryStatus(res, `user ${user.nickName} loged out!`)
     } catch (error) {
-        catchStatus(res,`CANNOT LOGIN`, error)
+        catchStatus(res, `CANNOT LOGIN`, error)
     }
 }
 

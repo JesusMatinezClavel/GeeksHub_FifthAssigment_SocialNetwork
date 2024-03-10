@@ -22,7 +22,7 @@ export const auth = (req,res,next) => {
         }
 
         req.tokenData = {
-            userID: tokenValid.userID,
+            userID: tokenValid.userId,
             roleName: tokenValid.roleName
         }
 
