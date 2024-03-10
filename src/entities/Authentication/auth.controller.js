@@ -165,7 +165,7 @@ export const logIn = async (req, res) => {
 
 export const logOut = async (req, res) => {
     try {
-        const userID = req.tokenData.userID
+        const userID = req.tokenData.userId
         await User.findOneAndUpdate(
             {
                 _id: userID
