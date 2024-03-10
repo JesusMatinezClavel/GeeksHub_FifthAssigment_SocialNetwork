@@ -1,3 +1,5 @@
+
+// Function to calculate the age from the given birhdate
 export const userAge = (date) => {
     const today = new Date()
 

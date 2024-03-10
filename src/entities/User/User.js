@@ -17,6 +17,10 @@ const UserSchema = new Schema(
             required: true,
             unique: true
         },
+        profileImg: {
+            type: String,
+            default: "../../../img/default-ProfileImg.png"
+        },
         bio: {
             type: String,
             required: false
@@ -45,7 +49,7 @@ const UserSchema = new Schema(
             default: "user"
         },
         isActive: {
-            type:Boolean,
+            type: Boolean,
             default: false
         },
         followers: {

@@ -1,28 +1,44 @@
+import 'dotenv/config'
 import bcrypt from "bcrypt";
 import User from "../User/User.js";
 import jwt from "jsonwebtoken";
 import { userAge } from "../../utils/userAge.js";
+import { catchStatus, tryStatus } from "../../utils/resStatus.js";
+
 
 
 export const register = async (req, res) => {
     try {
-        const { firstName, lastName, bio, nickName, email, passwordBody, birthDate } = req.body
+        let { firstName, lastName, profileImg, bio, nickName, email, passwordBody, birthDate } = req.body
 
         if (!nickName || !email || !passwordBody || !birthDate) {
             return res.status(400).json({
                 success: false,
-                message: "Name, email or password are invalid!"
+                message: "Name, email, password or birthdate are invalid!"
             })
         }
 
+        if (!profileImg || typeof (profileImg) !== 'string'||!profileImg.match(/\.(jpeg|jpg|gif|png)$/i)) {
+            profileImg = User.call(profileImg).profileImg
+        }
+
         const date = new Date(birthDate)
+
+        const age = userAge(date)
+
+        if (age < 18) {
+            return res.status(400).json({
+                success: false,
+                message: `You have to be +18 to register!`
+            })
+        }
+
         if (passwordBody.length < 6 || passwordBody.length > 10) {
             return res.status(400).json({
                 success: false,
                 message: "Password must contain between 6 and 10 characters"
             })
         }
-
 
         const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
         if (!validEmail.test(email)) {
@@ -33,6 +49,7 @@ export const register = async (req, res) => {
                 }
             )
         }
+
         const passwordEncrypted = bcrypt.hashSync(passwordBody, 5)
 
         const user = await User.findOne({
@@ -45,13 +62,13 @@ export const register = async (req, res) => {
                 message: `email ${email} is already in use!`
             })
         }
-        let age = userAge(date)
-        console.log(age);
 
-        const newUser = await User.create(
+
+        await User.create(
             {
                 firstName,
                 lastName,
+                profileImg,
                 bio,
                 nickName,
                 email,
@@ -63,28 +80,20 @@ export const register = async (req, res) => {
         const restProfile = {
             name: `${firstName} ${lastName}`,
             nickName,
-            age,         
+            profileImg,
+            age,
             bio,
             birthDate: date,
             email,
         }
 
-        res.status(201).json({
-            success: true,
-            message: "User registered succesfully",
-            data: restProfile
-        })
+        tryStatus(res, `user ${nickName} registered!`, restProfile)
     } catch (error) {
-        console.log(error)
-        res.status(500).json({
-            success: false,
-            message: "User cant be registered",
-            error: error.message
-        })
+        catchStatus(res,`CANNOT REGISTER`, error.message)
     }
 }
 
-export const login = async (req, res) => {
+export const logIn = async (req, res) => {
 
     try {
         const email = req.body.email
@@ -113,8 +122,6 @@ export const login = async (req, res) => {
             }
         )
 
-        console.log(user);
-
         if (!user) {
             return res.status(400).json({
                 success: false,
@@ -122,6 +129,14 @@ export const login = async (req, res) => {
             })
         }
 
+        await User.findOneAndUpdate(
+            {
+                email: email
+            },
+            {
+                isActive: true
+            }
+        )
         const isValidPassword = bcrypt.compareSync(password, user.password)
 
         if (!isValidPassword) {
@@ -142,19 +157,28 @@ export const login = async (req, res) => {
             }
         )
 
-        res.status(200).json({
-            success: true,
-            message: "User logged succesfully",
-            token: token //MOSTRAMOS EL TOKEN DE MANERA TEMPORAL PARA PODER PROBAR CON ÉL OTRA FUNCIONALIDADES
-        })
-
+        tryStatus(res, `user ${user.nickName} loged in!`, token)
     } catch (error) {
+        catchStatus(res,`CANNOT LOGIN`, error)
+    }
+}
 
-        res.status(500).json({
-            success: false,
-            message: "User cant be logged",
-            error: error
-        })
+export const logOut = async (req, res) => {
+    try {
+        const userID = req.tokenData.userID
+        await User.findOneAndUpdate(
+            {
+                _id: userID
+            },
+            {
+                isActive: false
+            }
+        )
+
+        
+        tryStatus(res, `user ${user.nickName} loged in!`)
+    } catch (error) {
+        catchStatus(res,`CANNOT LOGIN`, error)
     }
 }
 
