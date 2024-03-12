@@ -1,5 +1,5 @@
 import { catchStatus, tryStatus } from "../../utils/resStatus.js"
-import User from "../user/User.js"
+import User from "../user_FIX/User.js"
 import Post from "./Post.js"
 
 
