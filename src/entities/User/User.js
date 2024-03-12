@@ -66,7 +66,11 @@ const UserSchema = new Schema(
         chat: [{
             type: Schema.Types.ObjectId,
             ref: 'Chat'
-        }]
+        }],
+        posts: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Post'
+        }],
     },
     {
         timestamps: true,
