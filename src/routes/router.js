@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { authRoute } from "../entities/authentication_FIX/auth.routes.js";
-import { userRoute } from "../entities/user_FIX/user.routes.js";
+import { authRoute } from "../entities/authentication/auth.routes.js";
+import { userRoute } from "../entities/user/user.routes.js";
 
 
 const router = Router()
