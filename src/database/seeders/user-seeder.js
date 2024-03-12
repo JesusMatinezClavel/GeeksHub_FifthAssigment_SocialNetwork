@@ -101,7 +101,7 @@ export const userSeeder = async () => {
             const randonNum = faker.number.int({ min: 0, max: 19 })
             !followeds.includes(randonNum)
                 ? followeds.push((everyUser[randonNum]._id))
-                : followeds.push((everyUser[faker.number.int({ min: 0, max: 19 })]._id))
+                : i -= 1
         }
         return followeds
     }
@@ -118,6 +118,9 @@ export const userSeeder = async () => {
                 new: true
             }
         )
+        if (element.followed.includes(element._id)) {
+            element.followed.pull(element._id)
+        }
     }
 
     const everyFollowed = await User.find({ isActive: false })

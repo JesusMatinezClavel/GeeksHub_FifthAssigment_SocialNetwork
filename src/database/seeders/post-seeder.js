@@ -8,8 +8,12 @@ export const postSeeder = async () => {
 
     const generateLikes = () => {
         const userLikes = []
-        for (let i = 0; i < (faker.number.int({ min: 0, max: 10 })); i++) {
-            userLikes.push((users[faker.number.int({ min: 0, max: 19 })])._id)
+        const randomNum = faker.number.int({ min: 0, max: 10 })
+        for (let i = 0; i < randomNum; i++) {
+            const randomNumIndex = faker.number.int({ min: 0, max: 19 })
+            !userLikes.includes(randomNumIndex)
+                ? userLikes.push((users[randomNumIndex])._id)
+                : i = - 1
         }
         return userLikes
     }
