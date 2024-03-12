@@ -58,15 +58,15 @@ const UserSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'User'
         }],
-        likes: [{
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        }],
         chat: [{
             type: Schema.Types.ObjectId,
             ref: 'Chat'
         }],
         posts: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Post'
+        }],
+        liked: [{
             type: Schema.Types.ObjectId,
             ref: 'Post'
         }],

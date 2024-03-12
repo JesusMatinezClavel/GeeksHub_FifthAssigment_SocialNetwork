@@ -6,11 +6,20 @@ import mongoose from "mongoose";
 export const postSeeder = async () => {
     const users = await User.find({ isActive: false })
 
+    const generateLikes = () => {
+        const userLikes = []
+        for (let i = 0; i < (faker.number.int({ min: 0, max: 10 })); i++) {
+            userLikes.push((users[faker.number.int({ min: 0, max: 19 })])._id)
+        }
+        return userLikes
+    }
+
     const generateRandomPost = () => {
         const _id = new mongoose.Types.ObjectId(faker.number.int())
         const author = users[parseInt((Math.random() * 18) + 2)]._id
         const title = fakerES.lorem.words()
         const media = faker.image.url()
+        const likes = generateLikes()
         const description = fakerES.lorem.paragraph()
 
         const randomPost = {
@@ -18,8 +27,10 @@ export const postSeeder = async () => {
             author,
             title,
             description,
-            media
+            media,
+            likes
         }
+
 
         return randomPost
     }
@@ -40,7 +51,23 @@ export const postSeeder = async () => {
                 new: true
             }
         )
-        const updatedUser = await User.findOne({ _id: posts[i].author })
+    }
+
+    for (const element of posts) {
+        const postId = element._id
+        for (const target of element.likes) {
+            await User.findOneAndUpdate(
+                {
+                    _id: target
+                },
+                {
+                    $push: { liked: postId }
+                },
+                {
+                    new: true
+                }
+            );
+        }
     }
     await Post.create(posts)
 
