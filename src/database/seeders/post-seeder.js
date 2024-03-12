@@ -41,7 +41,6 @@ export const postSeeder = async () => {
             }
         )
         const updatedUser = await User.findOne({ _id: posts[i].author })
-        console.log(updatedUser);
     }
     await Post.create(posts)
 
