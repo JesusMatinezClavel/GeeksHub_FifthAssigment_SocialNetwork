@@ -58,6 +58,14 @@ const UserSchema = new Schema(
         followed: [{
             type: Schema.Types.ObjectId,
             ref: 'User'
+        }],
+        likes: [{
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        }],
+        chat: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Chat'
         }]
     },
     {

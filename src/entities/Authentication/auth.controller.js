@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import bcrypt from "bcrypt";
-import User from "../User/User.js";
+import User from "../user/User.js";
 import jwt from "jsonwebtoken";
 import { userAge } from "../../utils/userAge.js";
 import { catchStatus, tryStatus } from "../../utils/resStatus.js";
@@ -62,7 +62,6 @@ export const register = async (req, res) => {
                 message: `email ${email} is already in use!`
             })
         }
-
 
         await User.create(
             {
