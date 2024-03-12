@@ -1,5 +1,5 @@
 import { faker, fakerES } from "@faker-js/faker";
-import User from "../../entities/user_FIX/User.js";
+import User from "../../entities/user/User.js";
 import Post from "../../entities/post/Post.js";
 import mongoose from "mongoose";
 
