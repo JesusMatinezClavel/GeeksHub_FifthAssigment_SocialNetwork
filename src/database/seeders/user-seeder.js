@@ -1,7 +1,6 @@
 import User from "../../entities/user/User.js";
 import bcrypt from "bcrypt";
 import { userAge } from "../../utils/userAge.js";
-import { dbConection } from "../db.js";
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
 import { faker, fakerES } from "@faker-js/faker";
