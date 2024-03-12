@@ -46,6 +46,3 @@ Creamos la ruta
 ```bash
 $ npm i jsonwebtoken
 ```
-
-
-comprobación de testeo de prueba
