@@ -1,5 +1,5 @@
 import { catchStatus, tryStatus } from "../../utils/resStatus.js";
-import User from "./User.js";
+import User from "../user_FIX/User.js";
 
 export const getUser = async (req, res) => {
     try {

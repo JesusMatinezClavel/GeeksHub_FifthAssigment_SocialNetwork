@@ -1,4 +1,4 @@
-import User from "../../entities/User/User.js";
+import User from "../../entities/user_FIX/User.js";
 import bcrypt from "bcrypt";
 import { userAge } from "../../utils/userAge.js";
 import { dbConection } from "../db.js";
