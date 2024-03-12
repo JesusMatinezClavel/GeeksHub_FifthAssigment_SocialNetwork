@@ -2,11 +2,11 @@ import User from "../../entities/User/User.js";
 import bcrypt from "bcrypt";
 import { userAge } from "../../utils/userAge.js";
 import { dbConection } from "../db.js";
-import { mongoose } from "mongoose";
+import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
-import { Faker, faker, fakerES } from "@faker-js/faker";
+import { faker, fakerES } from "@faker-js/faker";
 
-export const generateControlUsers = async () => {
+export const generateUsers = async () => {
     try {
         const connect = await dbConection()
         console.log('connected to MongoDB');
@@ -14,7 +14,7 @@ export const generateControlUsers = async () => {
         const birthDate = new Date(1992, 6, 4);
         const controlUser = await User.create(
             {
-                _id: new ObjectId('000000000000000000000001'),
+                _id: new mongoose.Types.ObjectId('000000000000000000000001'),
                 firstName: "control",
                 lastName: "user",
                 nickName: "user",
@@ -64,27 +64,15 @@ export const generateControlUsers = async () => {
         console.log('           control users created!');
         console.log('------------------------------------------------');
 
-    } catch (error) {
-        console.error('Error al crear el usuario:', error.message);
-    } finally {
-        mongoose.disconnect()
-    }
-};
-
-export const generateRandomUsers = async () => {
-    try {
-        const connect = await dbConection()
-        console.log('connected to MongoDB');
-
         const generateRandomUser = () => {
             const firstName = fakerES.person.firstName()
             const lastName = fakerES.person.lastName()
-            const nickName = fakerES.person.middleName()
+            const nickName = (fakerES.person.middleName() + faker.number.int({ min: 0, max: 20 }))
             const profileImg = "../../../img/default-ProfileImg.png"
             const bio = fakerES.person.bio()
             const birthDate = fakerES.date.past({ years: 18, refDate: '2024-03-11' })
             const age = faker.number.int({ min: 18, max: 50 })
-            const email = faker.internet.email({ firstName: firstName })
+            const email = faker.internet.email({ firstName: firstName, lastName: nickName })
             const password = faker.internet.password({ length: 8, memorable: true })
 
             const randomUser = {
@@ -104,16 +92,9 @@ export const generateRandomUsers = async () => {
         const users = []
         for (let i = 0; i < 17; i++) {
             users.push(generateRandomUser())
-            users.forEach(element => {
-                element.nickName === users[users.length-1]
-                    ? users.splice(-1)
-                    : null
-            });
         }
 
         await User.create(users)
-
-        console.log(users);
 
         console.log('------------------------------------------------');
         console.log('           random users created!');
@@ -124,7 +105,4 @@ export const generateRandomUsers = async () => {
     } finally {
         mongoose.disconnect()
     }
-}
-
-generateControlUsers()
-generateRandomUsers()
+};
