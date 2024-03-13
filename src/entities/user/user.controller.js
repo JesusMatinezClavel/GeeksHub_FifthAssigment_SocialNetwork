@@ -1,6 +1,7 @@
 import { catchStatus, tryStatus } from "../../utils/resStatus.js";
 import User from "./User.js";
 import bcrypt from "bcrypt";
+import mongoose from "mongoose";
 
 export const getUser = async (req, res) => {
     try {
@@ -33,7 +34,7 @@ export const getOwnProfile = async (req, res) => {
     }
 }
 
-export const getUserbyId = async (req, res) => {
+export const getUserbyEmail = async (req, res) => {
     try {
         const { email } = req.query
         const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
@@ -58,7 +59,7 @@ export const getUserbyId = async (req, res) => {
             followers: user.followers.length,
             follows: user.followed.length
         }
-        tryStatus(res, `profile called succesfully`,userProfile)
+        tryStatus(res, `profile called succesfully`, userProfile)
     } catch (error) {
         catchStatus(res, `CANNOT CALL OWN PROFILE`, error)
     }
@@ -265,3 +266,27 @@ export const unFollow = async (req, res) => {
     }
 }
 
+export const deleteUserbyId = async (req, res) => {
+    try {
+        const id = req.params.id
+        if (id <= "0") {
+            return res.status(400).json({
+                success: false,
+                message: `id is not valid!`
+            })
+        }
+        const userId = new mongoose.Types.ObjectId((Number(id) * (1e-24)).toFixed(24).toString().split(".")[1])
+        const user = await User.find({ _id: userId })
+        if (!user[0]) {
+            return res.status(400).json({
+                success: false,
+                message: `User doesn't exist!`
+            })
+        }
+        await User.deleteOne(user[0])
+        tryStatus(res, `user ${user[0].nickName} deleted succesfully`)
+    } catch (error) {
+        console.log(error);
+        catchStatus(res, `CANNOT DELETE USER`, error)
+    }
+}

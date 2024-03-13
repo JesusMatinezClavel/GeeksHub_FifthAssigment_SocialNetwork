@@ -19,7 +19,6 @@ export const postSeeder = async () => {
     }
 
     const generateRandomPost = () => {
-        const _id = new mongoose.Types.ObjectId(faker.number.int())
         const author = users[parseInt((Math.random() * 18) + 2)]._id
         const title = fakerES.lorem.words()
         const media = faker.image.url()
@@ -27,7 +26,6 @@ export const postSeeder = async () => {
         const description = fakerES.lorem.paragraph()
 
         const randomPost = {
-            _id,
             author,
             title,
             description,
@@ -42,6 +40,7 @@ export const postSeeder = async () => {
     const posts = []
     for (let i = 0; i < 20; i++) {
         posts.push(generateRandomPost())
+        posts[i]._id = new mongoose.Types.ObjectId(((11 + i) * (1e-24)).toFixed(24).toString().split(".")[1])
         await User.findOneAndUpdate(
             {
                 _id: posts[i].author

@@ -10,13 +10,11 @@ export const commentSeeder = async () => {
     const posts = await Post.find()
 
     const generateRandomComment = () => {
-        const _id = new mongoose.Types.ObjectId(faker.number.int())
         const sender = users[faker.number.int({ min: 0, max: 9 })]._id
         const postTarget = posts[faker.number.int({ min: 10, max: 19 })]._id
         const message = fakerES.lorem.sentences()
 
         const randomComment = {
-            _id,
             sender,
             postTarget,
             message,
@@ -27,6 +25,7 @@ export const commentSeeder = async () => {
     const comments = []
     for (let i = 0; i < 20; i++) {
         comments.push(generateRandomComment())
+        comments[i]._id = new mongoose.Types.ObjectId(((1111 + i) * (1e-24)).toFixed(24).toString().split(".")[1])
         await Post.findOneAndUpdate(
             {
                 _id: comments[i].postTarget

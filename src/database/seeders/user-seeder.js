@@ -59,8 +59,7 @@ export const userSeeder = async () => {
     console.log('           control users created!');
     console.log('------------------------------------------------');
 
-    const generateRandomUser = () => {
-        const _id = new mongoose.Types.ObjectId(faker.number.int())
+    const generateRandomUser = (i) => {
         const firstName = fakerES.person.firstName()
         const lastName = fakerES.person.lastName()
         const nickName = (fakerES.person.suffix() + fakerES.person.middleName() + faker.number.int({ min: 0, max: 20 }))
@@ -72,7 +71,6 @@ export const userSeeder = async () => {
         const password = faker.internet.password({ length: 8, memorable: true })
 
         const randomUser = {
-            _id,
             firstName,
             lastName,
             nickName,
@@ -89,17 +87,19 @@ export const userSeeder = async () => {
     const users = []
     for (let i = 0; i < 17; i++) {
         users.push(generateRandomUser())
+        users[i]._id = new mongoose.Types.ObjectId(((4 + i) * (1e-24)).toFixed(24).toString().split(".")[1])
     }
 
     await User.create(users)
 
     const everyUser = await User.find()
 
+
     const generateFolloweds = () => {
         const followeds = []
         for (let i = 0; i < (faker.number.int({ min: 0, max: 10 })); i++) {
             const randonNum = faker.number.int({ min: 0, max: 19 })
-            !followeds.includes(randonNum)
+            !followeds.includes(everyUser[randonNum]._id)
                 ? followeds.push((everyUser[randonNum]._id))
                 : i -= 1
         }
