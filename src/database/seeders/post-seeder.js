@@ -4,7 +4,7 @@ import Post from "../../entities/post/Post.js";
 import mongoose from "mongoose";
 
 export const postSeeder = async () => {
-    const users = await User.find({ isActive: false })
+    const users = await User.find()
 
     const generateLikes = () => {
         const userLikes = []
@@ -39,8 +39,6 @@ export const postSeeder = async () => {
         return randomPost
     }
 
-
-
     const posts = []
     for (let i = 0; i < 20; i++) {
         posts.push(generateRandomPost())
@@ -71,6 +69,7 @@ export const postSeeder = async () => {
                     new: true
                 }
             );
+            
         }
     }
     await Post.create(posts)

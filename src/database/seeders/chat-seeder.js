@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import Chat from "../../entities/chat/Chat.js";
 
 export const chatSeeder = async () => {
-    const users = await User.find({ isActive: false })
+    const users = await User.find()
     const generateRandomChat = () => {
 
 

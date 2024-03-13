@@ -1,35 +1,35 @@
 import { faker, fakerES } from "@faker-js/faker";
 import mongoose from "mongoose";
 import Comment from "../../entities/comment/Comment.js";
+import User from "../../entities/user/User.js";
 import Post from "../../entities/post/Post.js";
 
 export const commentSeeder = async () => {
-    const users = await Post.find({ isActive: false })
 
+    const users = await User.find()
+    const posts = await Post.find()
 
     const generateRandomComment = () => {
         const _id = new mongoose.Types.ObjectId(faker.number.int())
         const sender = users[faker.number.int({ min: 0, max: 9 })]._id
-        const receiver = users[faker.number.int({ min: 10, max: 19 })]._id
+        const postTarget = posts[faker.number.int({ min: 10, max: 19 })]._id
         const message = fakerES.lorem.sentences()
 
         const randomComment = {
             _id,
             sender,
-            receiver,
+            postTarget,
             message,
         }
         return randomComment
     }
 
-
-
     const comments = []
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 20; i++) {
         comments.push(generateRandomComment())
-        await User.findOneAndUpdate(
+        await Post.findOneAndUpdate(
             {
-                _id: comments[i].receiver
+                _id: comments[i].postTarget
             },
             {
                 $push: { comment: comments[i]._id }
@@ -51,7 +51,8 @@ export const commentSeeder = async () => {
         )
     }
 
-    // await Comment.create(comments)
+
+    await Comment.create(comments)
 
     console.log('------------------------------------------------');
     console.log('           random comments created!');

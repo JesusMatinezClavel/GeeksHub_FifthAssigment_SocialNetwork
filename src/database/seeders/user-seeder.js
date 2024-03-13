@@ -93,7 +93,7 @@ export const userSeeder = async () => {
 
     await User.create(users)
 
-    const everyUser = await User.find({ isActive: false })
+    const everyUser = await User.find()
 
     const generateFolloweds = () => {
         const followeds = []
@@ -123,7 +123,7 @@ export const userSeeder = async () => {
         }
     }
 
-    const everyFollowed = await User.find({ isActive: false })
+    const everyFollowed = await User.find()
 
     for (const element of everyFollowed) {
         const followedId = element._id

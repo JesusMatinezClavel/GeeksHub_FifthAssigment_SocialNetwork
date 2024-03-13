@@ -62,6 +62,10 @@ const UserSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Chat'
         }],
+        comment: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Comment'
+        }],
         posts: [{
             type: Schema.Types.ObjectId,
             ref: 'Post'
