@@ -290,3 +290,54 @@ export const deleteUserbyId = async (req, res) => {
         catchStatus(res, `CANNOT DELETE USER`, error)
     }
 }
+
+export const updateRole = async (req, res) => {
+    try {
+        const id = req.params.id
+        if (id <= "0") {
+            return res.status(400).json({
+                success: false,
+                message: `id is not valid!`
+            })
+        }
+        const userId = new mongoose.Types.ObjectId((Number(id) * (1e-24)).toFixed(24).toString().split(".")[1])
+        const user = await User.find({ _id: userId })
+        if (!user[0]) {
+            return res.status(400).json({
+                success: false,
+                message: `User doesn't exist!`
+            })
+        }
+        const { role } = req.body
+        console.log(role);
+        if (role !== "user" && role !== "admin" && role !== "superadmin") {
+            return res.status(400).json({
+                success: false,
+                message: `role is invalid!`
+            })
+        }
+
+
+        await User.findOneAndUpdate(
+            {
+                _id: userId
+            },
+            {
+                role: role
+            }
+        )
+
+        const userAfter = await User.findOne({ _id: userId })
+        const userUpdate = {
+            name: `${userAfter.firstName} ${userAfter.lastName}`,
+            profileImg: userAfter.profileImg,
+            nickName: userAfter.nickName,
+            age: userAfter.age,
+            email: userAfter.email,
+            role: userAfter.role
+        }
+        tryStatus(res, `profile updated succesfully`, userUpdate)
+    } catch (error) {
+        catchStatus(res, `CANNOT UPDATE OWN PROFILE`, error)
+    }
+}
