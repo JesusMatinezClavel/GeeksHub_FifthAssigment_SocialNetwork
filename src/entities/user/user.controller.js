@@ -10,6 +10,28 @@ export const getUser = async (req, res) => {
     }
 }
 
+export const ownProfile = async (req, res) => {
+    try {
+        const userId = req.tokenData.userID
+        const user = await User.findOne({ _id: userId })
+        const ownProfile = {
+            name: `${user.firstName} ${user.lastName}`,
+            profileImg: user.profileImg,
+            nickName: user.nickName,
+            age: user.age,
+            email: user.email,
+            chats: user.chat.length,
+            liked: user.liked.length,
+            posts: user.posts.length,
+            followers: user.followers.length,
+            follows: user.followed.length
+        }
+        tryStatus(res, `profile called succesfully`, ownProfile)
+    } catch (error) {
+        catchStatus(res, `CANNOT CALL OWN PROFILE`, error)
+    }
+}
+
 export const follow = async (req, res) => {
     try {
         const userID = req.tokenData.userID
@@ -98,7 +120,7 @@ export const unFollow = async (req, res) => {
                 })
             }
         }
-        if(user.followed.length === 0){
+        if (user.followed.length === 0) {
             return res.status(400).json({
                 success: false,
                 message: `Your are not following anyone!`
