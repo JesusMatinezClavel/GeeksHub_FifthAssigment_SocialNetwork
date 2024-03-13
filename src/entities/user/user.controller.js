@@ -33,6 +33,37 @@ export const getOwnProfile = async (req, res) => {
     }
 }
 
+export const getUserbyId = async (req, res) => {
+    try {
+        const { email } = req.query
+        const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
+        if (!validEmail.test(email)) {
+            return res.status(400).json(
+                {
+                    success: false,
+                    message: "format email invalid"
+                }
+            )
+        }
+        const user = await User.findOne({ email: email })
+        const userProfile = {
+            name: `${user.firstName} ${user.lastName}`,
+            profileImg: user.profileImg,
+            nickName: user.nickName,
+            age: user.age,
+            email: user.email,
+            chats: user.chat.length,
+            liked: user.liked.length,
+            posts: user.posts.length,
+            followers: user.followers.length,
+            follows: user.followed.length
+        }
+        tryStatus(res, `profile called succesfully`,userProfile)
+    } catch (error) {
+        catchStatus(res, `CANNOT CALL OWN PROFILE`, error)
+    }
+}
+
 export const updateOwnProfile = async (req, res) => {
     try {
         const userId = req.tokenData.userID
@@ -74,9 +105,9 @@ export const updateOwnProfile = async (req, res) => {
                 message: `passwordCheck is different from password!`
             })
         }
-        
 
-        const passwordHash = bcrypt.hashSync(password,8)
+
+        const passwordHash = bcrypt.hashSync(password, 8)
 
 
 
@@ -92,7 +123,7 @@ export const updateOwnProfile = async (req, res) => {
                 bio: bio,
                 email: email,
                 password: passwordHash,
-              }
+            }
         )
 
         const userAfter = await User.findOne({ _id: userId })
@@ -113,7 +144,6 @@ export const updateOwnProfile = async (req, res) => {
         catchStatus(res, `CANNOT UPDATE OWN PROFILE`, error)
     }
 }
-
 
 export const follow = async (req, res) => {
     try {
