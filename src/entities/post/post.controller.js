@@ -15,6 +15,18 @@ export const getPost = async (req, res) => {
     }
 }
 
+export const getAllPosts = async (req, res) => {
+    try {
+        const posts = await Post.find()
+
+        tryStatus(res, 'All posts called succesfully!', posts)
+    } catch (error) {
+        catchStatus(req, 'CANNOT GET POSTS', error)
+    }
+}
+
+
+
 export const newPost = async (req, res) => {
     try {
 
