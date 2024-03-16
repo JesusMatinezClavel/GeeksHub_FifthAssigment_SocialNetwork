@@ -118,6 +118,75 @@ export const newPost = async (req, res) => {
     }
 }
 
+export const addRemoveLike = async (req, res) => {
+    try {
+
+        const postId = new mongoose.Types.ObjectId(((req.params.id) * (1e-24)).toFixed(24).toString().split(".")[1])
+        const userId = req.tokenData.userID
+
+        if (!postId) {
+            return res.status(400).json({
+                success: false,
+                message: `postId is invalid!`
+            })
+        }
+
+        const user = await User.findOne({ _id: userId })
+        const post = await Post.findOne({ _id: postId })
+
+        if (!post) {
+            return res.status(400).json({
+                success: false,
+                message: `post ${req.params.id} doesn't exist!`
+            })
+        }
+
+        if (user.liked.includes(postId)) {
+
+            await User.findOneAndUpdate(
+                {
+                    _id: user._id
+                },
+                {
+                    $pull: { liked: post._id }
+                }
+            )
+
+            await Post.findOneAndUpdate(
+                {
+                    _id: postId
+                },
+                {
+                    $pull: { likes: userId }
+                }
+            )
+            tryStatus(res,`post ${req.params.id} liked!`)
+        } else {
+
+            await User.findOneAndUpdate(
+                {
+                    _id: user._id
+                },
+                {
+                    $push: { liked: post._id }
+                }
+            )
+
+            await Post.findOneAndUpdate(
+                {
+                    _id: postId
+                },
+                {
+                    $push: { likes: userId }
+                }
+            )
+            tryStatus(res,`post ${req.params.id} disliked!`)
+        }
+    } catch (error) {
+        catchStatus(res, 'CANNOT LIKE POST', error)
+    }
+}
+
 export const deletePostbyId = async (req, res) => {
     try {
 
@@ -231,3 +300,6 @@ export const updateOwnPost = async (req, res) => {
         catchStatus(res, 'CANNOT UPDATE POST', error)
     }
 }
+
+
+
