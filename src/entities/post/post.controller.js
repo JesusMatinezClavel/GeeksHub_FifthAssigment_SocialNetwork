@@ -97,7 +97,7 @@ export const deletePostbyId = async (req, res) => {
 
         const user = await User.findOne({ _id: userId })
 
-        if (!user.posts.includes(postId)){
+        if (!user.posts.includes(postId)) {
             return res.status(400).json({
                 success: false,
                 message: `Post ${req.params.id} doesn't belong to you!`
@@ -105,12 +105,12 @@ export const deletePostbyId = async (req, res) => {
         }
 
 
-            await Post.deleteOne(
-                {
-                    _id: postId,
-                    author: userId
-                }
-            )
+        await Post.deleteOne(
+            {
+                _id: postId,
+                author: userId
+            }
+        )
 
 
 
@@ -120,3 +120,69 @@ export const deletePostbyId = async (req, res) => {
     }
 }
 
+export const updateOwnPost = async (req, res) => {
+    try {
+
+        let { id, title, description, media } = req.body
+        const postId = new mongoose.Types.ObjectId(((Number(id)) * (1e-24)).toFixed(24).toString().split(".")[1])
+        const userId = req.tokenData.userID
+        console.log(postId);
+
+        if (media !== "") {
+            if (typeof (media) !== 'string' || !media.match(/\.(jpeg|jpg|gif|png)$/i)) {
+                return res.status(400).json({
+                    success: false,
+                    message: `The media has no valid format!`
+                })
+            }
+        }
+
+        const post = await Post.findOne({ _id: postId })
+
+        if (!post) {
+            return res.status(400).json({
+                success: false,
+                message: `post ${req.body.id} doesn't exist!`
+            })
+        }
+
+        const user = await User.findOne({ _id: userId })
+
+        if (!user.posts.includes(postId)) {
+            return res.status(400).json({
+                success: false,
+                message: `Post ${req.body.id} doesn't belong to you!`
+            })
+        }
+
+        if (title === "") {
+            title = post.title
+        }
+        if (media === "") {
+            media = post.media
+        }
+        if (description === "") {
+            description = post.description
+        }
+
+
+        await Post.updateOne(
+            {
+                _id: postId
+            },
+            {
+                title: title,
+                media: media,
+                description: description
+            }
+        )
+
+        const updatedPost = await Post.findOne({_id: postId})
+
+
+
+        tryStatus(res, `Post ${req.body.id} updated!`, updatedPost)
+    } catch (error) {
+        catchStatus(res, 'CANNOT UPDATE POST', error)
+    }
+}
