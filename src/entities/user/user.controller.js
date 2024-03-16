@@ -1,4 +1,5 @@
 import { catchStatus, tryStatus } from "../../utils/resStatus.js";
+import Post from "../post/Post.js";
 import User from "./User.js";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
@@ -63,6 +64,39 @@ export const getUserbyEmail = async (req, res) => {
     } catch (error) {
         catchStatus(res, `CANNOT CALL OWN PROFILE`, error)
     }
+}
+
+export const getPostsbyUserId = async (req, res) => {
+    try {
+        const userId = new mongoose.Types.ObjectId(((req.params.id) * (1e-24)).toFixed(24).toString().split(".")[1])
+        const ownId = req.tokenData.userID
+
+        if (!userId) {
+            return res.status(400).json({
+                success: false,
+                message: `Invalid user ID!`
+            })
+        }
+
+        const user = await User.findOne({ _id: userId })
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: `user ${req.params.id} doesn't exist!`
+            })
+        }
+
+        const userPosts = await Post.find(
+            {
+                author: userId
+            }
+        )
+
+        tryStatus(res, `Posts from user ${req.params.id} called succesfully!`, userPosts)
+    } catch (error) {
+        catchStatus(res,`CANNOT CALL POSTS BY ID`,error)
+        }
 }
 
 export const updateOwnProfile = async (req, res) => {

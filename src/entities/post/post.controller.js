@@ -25,7 +25,41 @@ export const getAllPosts = async (req, res) => {
     }
 }
 
+export const getPostbyId = async (req, res) => {
+    try {
+        const postId = new mongoose.Types.ObjectId(((req.params.id) * (1e-24)).toFixed(24).toString().split(".")[1])
+        const userId = req.tokenData.userID
 
+        if (!postId) {
+            return res.status(400).json({
+                success: false,
+                message: `Invalid post ID!`
+            })
+        }
+
+        const post = await Post.findOne({ _id: postId })
+
+        if (!post) {
+            return res.status(400).json({
+                success: false,
+                message: `post ${req.params.id} doesn't exist!`
+            })
+        }
+
+        const user = await User.findOne({ _id: userId })
+
+        if (!user.posts.includes(postId)) {
+            return res.status(400).json({
+                success: false,
+                message: `Post ${req.params.id} doesn't belong to you!`
+            })
+        }
+
+        tryStatus(res, `Post ${req.params.id} called succesfully!`, post)
+    } catch (error) {
+        catchStatus(req, 'CANNOT GET POSTS', error)
+    }
+}
 
 export const newPost = async (req, res) => {
     try {
@@ -89,7 +123,6 @@ export const deletePostbyId = async (req, res) => {
 
         const postId = new mongoose.Types.ObjectId(((req.params.id) * (1e-24)).toFixed(24).toString().split(".")[1])
         const userId = req.tokenData.userID
-        console.log(postId);
 
         if (!postId) {
             return res.status(400).json({
@@ -189,7 +222,7 @@ export const updateOwnPost = async (req, res) => {
             }
         )
 
-        const updatedPost = await Post.findOne({_id: postId})
+        const updatedPost = await Post.findOne({ _id: postId })
 
 
 

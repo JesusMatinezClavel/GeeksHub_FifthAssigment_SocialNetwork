@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { auth } from "../../middlewares/auth.middleware.js";
-import { follow, getUser, getOwnProfile, unFollow, updateOwnProfile, getUserbyEmail, deleteUserbyId, updateRole } from "./user.controller.js";
+import { follow, getUser, getOwnProfile, unFollow, updateOwnProfile, getUserbyEmail, deleteUserbyId, updateRole, getPostsbyUserId } from "./user.controller.js";
 import { isSuperadmin } from "../../middlewares/isSuperadmin.middleware.js";
 
 const router = Router();
@@ -8,6 +8,7 @@ const router = Router();
 router.get('/', auth, isSuperadmin, getUser)
 router.get('/email', auth, isSuperadmin, getUserbyEmail)
 router.get('/profile', auth, getOwnProfile)
+router.get('/posts/:id', auth, getPostsbyUserId)
 router.put('/profile', auth, updateOwnProfile)
 router.put('/follow/', auth, follow)
 router.put('/unfollow/', auth, unFollow)
