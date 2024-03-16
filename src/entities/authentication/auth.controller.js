@@ -4,6 +4,7 @@ import User from "../user/User.js";
 import jwt from "jsonwebtoken";
 import { userAge } from "../../utils/userAge.js";
 import { catchStatus, tryStatus } from "../../utils/resStatus.js";
+import mongoose from "mongoose";
 
 
 
@@ -63,8 +64,11 @@ export const register = async (req, res) => {
             })
         }
 
+        const users = await User.find()
+
         await User.create(
             {
+                _id: new mongoose.Types.ObjectId(((users.length + 1) * (1e-24)).toFixed(24).toString().split(".")[1]),
                 firstName,
                 lastName,
                 profileImg,

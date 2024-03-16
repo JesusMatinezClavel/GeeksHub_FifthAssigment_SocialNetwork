@@ -25,7 +25,7 @@ export const commentSeeder = async () => {
     const comments = []
     for (let i = 0; i < 20; i++) {
         comments.push(generateRandomComment())
-        comments[i]._id = new mongoose.Types.ObjectId(((1111 + i) * (1e-24)).toFixed(24).toString().split(".")[1])
+        comments[i]._id = new mongoose.Types.ObjectId(((1 + i) * (1e-24)).toFixed(24).toString().split(".")[1])
         await Post.findOneAndUpdate(
             {
                 _id: comments[i].postTarget

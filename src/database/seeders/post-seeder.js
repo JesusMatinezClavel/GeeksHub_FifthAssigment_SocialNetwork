@@ -40,7 +40,7 @@ export const postSeeder = async () => {
     const posts = []
     for (let i = 0; i < 20; i++) {
         posts.push(generateRandomPost())
-        posts[i]._id = new mongoose.Types.ObjectId(((11 + i) * (1e-24)).toFixed(24).toString().split(".")[1])
+        posts[i]._id = new mongoose.Types.ObjectId(((1 + i) * (1e-24)).toFixed(24).toString().split(".")[1])
         await User.findOneAndUpdate(
             {
                 _id: posts[i].author

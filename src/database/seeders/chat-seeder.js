@@ -21,7 +21,7 @@ export const chatSeeder = async () => {
     const chats = []
     for (let i = 0; i < 30; i++) {
         chats.push(generateRandomChat())
-        chats[i]._id = new mongoose.Types.ObjectId(((111 + i) * (1e-24)).toFixed(24).toString().split(".")[1])
+        chats[i]._id = new mongoose.Types.ObjectId(((1 + i) * (1e-24)).toFixed(24).toString().split(".")[1])
 
         await User.findOneAndUpdate(
             {
