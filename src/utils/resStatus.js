@@ -14,6 +14,6 @@ export const tryStatus = (res, message, ...result) => {
     res.status(200).json({
         success: true,
         message: message,
-        result: result
+        data: result
     })
 }
