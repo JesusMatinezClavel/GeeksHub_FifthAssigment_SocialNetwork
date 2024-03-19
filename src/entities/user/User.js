@@ -43,7 +43,7 @@ const UserSchema = new Schema(
         },
         role: {
             type: String,
-            enum: ["user", "admin", "superAdmin"],
+            enum: ["user", "admin", "superadmin"],
             default: "user"
         },
         isActive: {
@@ -58,14 +58,22 @@ const UserSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'User'
         }],
-        likes: [{
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        }],
         chat: [{
             type: Schema.Types.ObjectId,
             ref: 'Chat'
-        }]
+        }],
+        comment: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Comment'
+        }],
+        posts: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Post'
+        }],
+        liked: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Post'
+        }],
     },
     {
         timestamps: true,

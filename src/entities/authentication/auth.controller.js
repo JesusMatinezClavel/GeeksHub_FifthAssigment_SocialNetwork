@@ -4,6 +4,7 @@ import { User } from "../user/User.js";
 import jwt from "jsonwebtoken";
 import { userAge } from "../../utils/userAge.js";
 import { catchStatus, tryStatus } from "../../utils/resStatus.js";
+import mongoose from "mongoose";
 
 
 
@@ -63,8 +64,11 @@ export const register = async (req, res) => {
             })
         }
 
+        const users = await User.find()
+
         await User.create(
             {
+                _id: new mongoose.Types.ObjectId(((users.length + 1) * (1e-24)).toFixed(24).toString().split(".")[1]),
                 firstName,
                 lastName,
                 profileImg,
@@ -105,12 +109,22 @@ export const logIn = async (req, res) => {
             })
         }
 
-        const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
-        if (!validEmail.test(email)) {
+        const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+        if (!emailRegex.test(email)) {
             return res.status(400).json(
                 {
                     success: false,
                     message: "Email format is not valid"
+                }
+            )
+        }
+
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,14}$/;
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json(
+                {
+                    success: false,
+                    message: "Password format is not valid"
                 }
             )
         }
@@ -124,7 +138,15 @@ export const logIn = async (req, res) => {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                message: "Email or password invalid"
+                message: "user doesn't exist!"
+            })
+        }
+
+        const isValidPassword = bcrypt.compareSync(password, user.password)
+        if (!isValidPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Password invalid"
             })
         }
 
@@ -136,14 +158,7 @@ export const logIn = async (req, res) => {
                 isActive: true
             }
         )
-        const isValidPassword = bcrypt.compareSync(password, user.password)
 
-        if (!isValidPassword) {
-            return res.status(400).json({
-                success: false,
-                message: "Email or password invalid"
-            })
-        }
 
         const token = jwt.sign(
             {

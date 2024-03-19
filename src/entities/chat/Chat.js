@@ -2,13 +2,17 @@ import mongoose, { Schema, model } from "mongoose";
 
 const chatSchema = new Schema({
 
+    sender: {
+        type: mongoose.Types.ObjectId,
+        ref: 'User'
+    },
+    receiver: {
+        type: mongoose.Types.ObjectId,
+        ref: 'User'
+    },
     message: {
         type: String,
         required: true
-    },
-    message: {
-        type: mongoose.Types.ObjectId,
-        ref: 'User'
     },
 },
     {

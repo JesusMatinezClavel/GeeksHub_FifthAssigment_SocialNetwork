@@ -2,17 +2,17 @@ import mongoose, { Schema, model } from "mongoose";
 
 const commentSchema = new Schema({
 
-    user: {
+    sender: {
+        type: String,
+        required: true
+    },
+    postTarget: {
         type: String,
         required: true
     },
     message: {
         type: String,
         required: true
-    },
-    message: {
-        type: mongoose.Types.ObjectId,
-        ref: 'Post'
     },
 },
     {
