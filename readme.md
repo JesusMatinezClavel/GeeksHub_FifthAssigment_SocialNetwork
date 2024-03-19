@@ -1,6 +1,6 @@
-# Tattoo's Studio📢
+# Social Network📢
 
-![Tattoo_Studio](./img/Tattoo_Studio.png)
+![SocialWebsite Posts](./img/Posts.png)
 
 <details>
   <summary>Content 📝</summary>
@@ -23,6 +23,10 @@ This project has the objetive of building the necessary API for managing a Socia
 
 This GeeksHub's assignment has the primary objective of learning to work with Express + Mongoose technology to build the structure needed for the database of a social website, and deploy it into fl0.
 
+![SocialWebsite Profile+Posts](./img/ProfilePosts.png)
+![SocialWebsite Profile+Posts](./img/Profile.png)
+
+
 In this project I've created different seeders (to test the funcionality) and the controllers needed for the assignment. 
 In this social network you can register (using your email and a nickname) and you can create new posts, aside from looking other people's posts and give or take a like from it.
 
@@ -38,11 +42,30 @@ Other funcionalities included for the superadmin are deleting users, updgrading 
 <a href="https://nextjs.org/">
     <img src= "https://img.shields.io/badge/node.js-026E00?style=for-the-badge&logo=node.js&logoColor=white"/>
 </a>
-<a href="https://www.docker.com/">
-    <img src= "https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
+<a href="https://www.mongodb.com/es">
+    <img src= "https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white"/>
 </a>
-<a href="https://www.mysql.com/">
-    <img src= "https://img.shields.io/badge/mysql-3E6E93?style=for-the-badge&logo=mysql&logoColor=white"/>
+<a href="https://developer.mozilla.org/es/docs/Web/JavaScript">
+    <img src= "https://img.shields.io/badge/javascript-orange?style=for-the-badge&logo=javascript    "/>
+</a>
+<a href="https://www.npmjs.com/package/nodemon">
+    <img src= "https://img.shields.io/badge/nodemon-lightgrey?style=for-the-badge&logo=nodemon"/>
+</a>
+<a href="https://www.npmjs.com/package/cors">
+    <img src= "https://img.shields.io/badge/Cors-purple?style=for-the-badge
+    "/>
+</a>
+<a href="https://www.npmjs.com/package/@faker-js/faker">
+    <img src= "https://img.shields.io/badge/faker-red?style=for-the-badge"/>
+</a>
+<a href="https://jwt.io/">
+    <img src= "https://img.shields.io/badge/JWT-lightgreen?style=for-the-badge&logo=JSON%20web%20tokens"/>
+</a>
+<a href="https://www.npmjs.com/package/dotenv">
+    <img src= "https://img.shields.io/badge/dotenv-blue?style=for-the-badge&logo=dotenv    "/>
+</a>
+<a href="https://www.npmjs.com/package/bcrypt">
+    <img src= "https://img.shields.io/badge/bcrypt-%23F7DF1E?style=for-the-badge&logo=bcrypt"/>
 </a>
 <a href="https://git-scm.com/">
     <img src= "https://img.shields.io/badge/git-F54D27?style=for-the-badge&logo=git&logoColor=white"/>
@@ -50,13 +73,11 @@ Other funcionalities included for the superadmin are deleting users, updgrading 
 <a href="https://www.github.com/">
     <img src= "https://img.shields.io/badge/github-24292F?style=for-the-badge&logo=github&logoColor=white"/>
 </a>
-<a href="https://jwt.io/">
-    <img src= "https://img.shields.io/badge/JWT-grey?style=for-the-badge&logo=JSON%20web%20tokens"/>
-</a>
  </div>
 
 ## DB Diagram📉
-![Diagram for the first tables created](./img/Diagram_Tables.png)
+
+![SocialWebsite_DB Diagram](./img/SocialNetworkDB_Diagram.png)
 
 ## Local installation🔨
 1. Clone the repository:
@@ -200,16 +221,19 @@ Other funcionalities included for the superadmin are deleting users, updgrading 
 
             GET localhost:4000/api/posts
 
-    - Get Posts by ID
+    - Get Posts by Post ID
 
-            GET localhost:4000/api/appointments/:id
+            GET localhost:4000/api/posts/:id
 
+    - Get Posts by User ID
+
+            GET localhost:4000/api/posts/user/:id
 
     - Delete Post by PostId
 
             DELETE localhost:4000/api/posts/:id
 
-    - Update Appointment
+    - Update Post
 
             PUT localhost:4000/api/posts
         body:
@@ -221,39 +245,10 @@ Other funcionalities included for the superadmin are deleting users, updgrading 
               "media":""
             }
         ```
+    - Add/Remove Like
 
+            PUT localhost:4000/api/posts/like/:id
 
-
-
-    - Get All Services
-
-            GET localhost:4000/api/appointments
-
-    - Create New Service
-
-            POST localhost:4000/api/services
-        body:
-        ``` js
-            {
-            "serviceName": "toigo",
-            "description": "Ofrecemos servicios profesionales para la colocación de piercings y dilatadores. Nuestro equipo garantiza procedimientos seguros y estilos variados para satisfacer las preferencias individuales de nuestros clientes."
-            }
-        ```
-
-    - Update Service
-
-            PUT localhost:4000/api/services/:id
-        body:
-        ``` js
-            {
-              "serviceName": "3",
-              "description": "huio"
-            }
-        ```
-
-    - Delete Service
-
-            DELETE localhost:4000/api/services/:id
 
 </details>
 
