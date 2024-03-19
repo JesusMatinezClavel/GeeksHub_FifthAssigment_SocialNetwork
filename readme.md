@@ -33,6 +33,8 @@ In this social network you can register (using your email and a nickname) and yo
 
 Other funcionalities included for the superadmin are deleting users, updgrading roles and selecting users by email.
 
+[fl0 deployment](https://socialnetwork-dev-ntsh.2.ie-1.fl0.io/api/healthy)
+
 
 
 ## Technologies used 💻
@@ -75,6 +77,7 @@ Other funcionalities included for the superadmin are deleting users, updgrading 
     <img src= "https://img.shields.io/badge/github-24292F?style=for-the-badge&logo=github&logoColor=white"/>
 </a>
  </div>
+
 
 ## DB Diagram📉
 
