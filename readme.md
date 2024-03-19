@@ -135,12 +135,17 @@ Other funcionalities included for the superadmin are deleting users, updgrading 
 
     - Get User by Email
 
-            POST localhost:4000/api/users?email=ejemplo@ejemplo.com
+            POST localhost:4000/api/users?email=user@user.com
 
-    - Update User
+    - Update User Role
 
-            Put localhost:4000/api/users/:id
-
+            Put localhost:4000/api/users/:id/role
+        body:
+        ``` js
+                {
+                  "role": "user"
+                }
+        ```
     - Delete User
 
             DELETE localhost:4000/api/users/:id
@@ -156,62 +161,70 @@ Other funcionalities included for the superadmin are deleting users, updgrading 
         body:
         ``` js
             {
-              "firstName": "user",
-              "lastName": "test",
-              "email": "user@user.com",
-              "password": "password"
+              "firstName": "",
+              "lastName": "",
+              "nickName": "",
+              "profileImg": "",
+              "bio": "",
+              "email": "",
+              "password": "",
+              "passwordCheck": ""
             }
         ```
+    - Follow
 
-- APPOINTMENTS
-    - New Appointment
+            PUT localhost:4000/api/users/follow/?nickname
 
-            POST localhost:4000/api/appointments
+    - Unfollow
+
+            PUT localhost:4000/api/users/unfollow/?nickname
+
+
+- POSTS
+    - Create New Post
+
+            POST localhost:4000/api/posts/
         body:
         ``` js
             {
-              "date": "2022-02-03",
-              "service": "3"
+              "title": "post 01",
+              "media": "",
+              "description": "description of the post 01"
             }
         ```
+    - Get My Posts
+
+            GET localhost:4000/api/posts/own
+
+    - Get All Posts
+
+            GET localhost:4000/api/posts
+
+    - Get Posts by ID
+
+            GET localhost:4000/api/appointments/:id
+
+
+    - Delete Post by PostId
+
+            DELETE localhost:4000/api/posts/:id
 
     - Update Appointment
 
-            PUT localhost:4000/api/appointments
+            PUT localhost:4000/api/posts
         body:
         ``` js
             {
-              "appointmentID": 16,
-              "date": "2029-11-04",
-              "service": "4"
+              "id":"22",
+              "title":"post 01",
+              "description":"",
+              "media":""
             }
         ```
 
-    - Get Appointments
 
-            GET localhost:4000/api/appointments
-        body:
-        ``` js
-            {
-              "appointmentID": 16,
-              "date": "2029-11-04",
-              "service": "4"
-            }
-        ```
 
-    - Get Appointments by ID
 
-            GET localhost:4000/api/appointments/:id
-        body:
-        ``` js
-            {
-              "appointmentID": 16,
-              "date": "2029-11-04",
-              "service": "4"
-            }
-        ```
-
-- SERVICES
     - Get All Services
 
             GET localhost:4000/api/appointments

@@ -28,7 +28,6 @@ export const getAllPosts = async (req, res) => {
 export const getPostbyId = async (req, res) => {
     try {
         const postId = new mongoose.Types.ObjectId(((req.params.id) * (1e-24)).toFixed(24).toString().split(".")[1])
-        const userId = req.tokenData.userID
 
         if (!postId) {
             return res.status(400).json({
@@ -46,20 +45,44 @@ export const getPostbyId = async (req, res) => {
             })
         }
 
-        const user = await User.findOne({ _id: userId })
-
-        if (!user.posts.includes(postId)) {
-            return res.status(400).json({
-                success: false,
-                message: `Post ${req.params.id} doesn't belong to you!`
-            })
-        }
-
         tryStatus(res, `Post ${req.params.id} called succesfully!`, post)
     } catch (error) {
         catchStatus(req, 'CANNOT GET POSTS', error)
     }
 }
+
+export const getPostbyUserId = async (req, res) => {
+    try {
+        const userId = new mongoose.Types.ObjectId(((req.params.id) * (1e-24)).toFixed(24).toString().split(".")[1])
+
+        if (!userId) {
+            return res.status(400).json({
+                success: false,
+                message: `Invalid post ID!`
+            })
+        }
+
+        const user = await User.findOne({ _id: userId })
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: `post ${req.params.id} doesn't exist!`
+            })
+        }
+
+        let userPosts = []
+        for (const element of user.posts) {
+            const userPost = await Post.findOne({_id: element})
+            userPosts.push(userPost)
+        }
+        
+        tryStatus(res, `Post from ${user.nickName} called succesfully!`, userPosts)
+    } catch (error) {
+        catchStatus(res, 'CANNOT GET POSTS', error)
+    }
+}
+
 
 export const newPost = async (req, res) => {
     try {
@@ -160,7 +183,7 @@ export const addRemoveLike = async (req, res) => {
                     $pull: { likes: userId }
                 }
             )
-            tryStatus(res,`post ${req.params.id} liked!`)
+            tryStatus(res, `post ${req.params.id} liked!`)
         } else {
 
             await User.findOneAndUpdate(
@@ -180,7 +203,7 @@ export const addRemoveLike = async (req, res) => {
                     $push: { likes: userId }
                 }
             )
-            tryStatus(res,`post ${req.params.id} disliked!`)
+            tryStatus(res, `post ${req.params.id} disliked!`)
         }
     } catch (error) {
         catchStatus(res, 'CANNOT LIKE POST', error)
