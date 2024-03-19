@@ -24,11 +24,12 @@ This project has the objetive of building the necessary API for managing a Socia
 This GeeksHub's assignment has the primary objective of learning to work with Express + Mongoose technology to build the structure needed for the database of a social website, and deploy it into fl0.
 
 ![SocialWebsite Profile+Posts](./img/ProfilePosts.png)
-![SocialWebsite Profile+Posts](./img/Profile.png)
 
 
 In this project I've created different seeders (to test the funcionality) and the controllers needed for the assignment. 
 In this social network you can register (using your email and a nickname) and you can create new posts, aside from looking other people's posts and give or take a like from it.
+
+![SocialWebsite Profile+Posts](./img/Profile.png)
 
 Other funcionalities included for the superadmin are deleting users, updgrading roles and selecting users by email.
 
