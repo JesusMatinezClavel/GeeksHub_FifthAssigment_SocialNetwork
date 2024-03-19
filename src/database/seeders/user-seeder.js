@@ -18,7 +18,7 @@ export const userSeeder = async () => {
             birthDate: birthDate,
             age: userAge(birthDate),
             email: "user@user.com",
-            password: bcrypt.hashSync('123456', 8),
+            password: bcrypt.hashSync('Pwd12345', 8),
             role: 'user'
         }
     )
@@ -34,7 +34,7 @@ export const userSeeder = async () => {
             birthDate: birthDate,
             age: userAge(birthDate),
             email: "admin@admin.com",
-            password: bcrypt.hashSync('123456', 8),
+            password: bcrypt.hashSync('Pwd12345', 8),
             role: 'admin'
         }
     )
@@ -50,7 +50,7 @@ export const userSeeder = async () => {
             birthDate: birthDate,
             age: userAge(birthDate),
             email: "superAdmin@superAdmin.com",
-            password: bcrypt.hashSync('123456', 8),
+            password: bcrypt.hashSync('Pwd12345', 8),
             role: 'superadmin'
         }
     )

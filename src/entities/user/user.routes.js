@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { auth } from "../../middlewares/auth.middleware.js";
-import { follow, getUser, getOwnProfile, unFollow, updateOwnProfile, getUserbyEmail, deleteUserbyId, updateRole, getPostsbyUserId } from "./user.controller.js";
+import { follow, getUsers, getOwnProfile, unFollow, updateOwnProfile, getUserbyEmail, deleteUserbyId, updateRole, getPostsbyUserId } from "./user.controller.js";
 import { isSuperadmin } from "../../middlewares/isSuperadmin.middleware.js";
 
 const router = Router();
 
-router.get('/', auth, isSuperadmin, getUser)
+router.get('/', auth, isSuperadmin, getUsers)
 router.get('/email', auth, isSuperadmin, getUserbyEmail)
 router.get('/profile', auth, getOwnProfile)
 router.get('/posts/:id', auth, getPostsbyUserId)

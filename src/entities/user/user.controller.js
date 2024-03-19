@@ -4,10 +4,36 @@ import User from "./User.js";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 
-export const getUser = async (req, res) => {
+export const getUsers = async (req, res) => {
     try {
-        const user = await User.find()
-        tryStatus(res, `users called succesfully`, user)
+        // Ponemos un límite a elegir en el Query (siendo este 5 si no se especifica)
+        let limit = Number(req.query.limit) || 5
+        // Ponemos la página que queremos ver (siendo esta la 1 si no se especifica)
+        const page = Number(req.query.page) || 1
+        // Hacemos un cálculo por el cual podemos elegir los Users a mostrar dependiendo del limit
+        const skip = (page - 1) * limit
+        const lengUsers = await User.find()
+
+        // Hacemos validaciones a estos 3 valores para asegurarnos de que son valores válidos
+        if (limit <= 0 || page <= 0 || !Number.isInteger(limit) || !Number.isInteger(page)) {
+            return res.status(400).json({
+                succes: false,
+                message: `Limit or page selected are not valid`
+            })
+        }
+        // El límite máximo será 20
+        if (limit > 20) {
+            limit = 20
+        }
+        // Si Skip sobrepasa la cantidad de Users dará un error
+        if (skip >= lengUsers.length) {
+            return res.status(400).json({
+                succes: false,
+                message: `There are no more users to call`
+            })
+        }
+        const users = await User.find().skip(skip).limit(limit)
+        tryStatus(res, `users called succesfully`, users)
     } catch (error) {
         catchStatus(res, `CANNOT CALL USERS`, error)
     }
