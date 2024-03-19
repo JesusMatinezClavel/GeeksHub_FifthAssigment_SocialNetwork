@@ -83,7 +83,11 @@ Other funcionalities included for the superadmin are deleting users, updgrading 
 ## Local installation🔨
 1. Clone the repository:
 
-	[SocialNetworks repository](https://github.com/JesusMatinezClavel/GeeksHub_FifthAssignment_SocialNetwork.git)
+	`Git Clone https://github.com/JesusMatinezClavel/GeeksHub_FifthAssignment_SocialNetwork.git`
+
+2. Change directory 
+
+    ` $ cd GeeksHub_FifthAssignment_SocialNetwork `
 
 2. Install the dependencies
 
