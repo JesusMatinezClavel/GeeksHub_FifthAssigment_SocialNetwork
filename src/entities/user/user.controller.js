@@ -121,8 +121,8 @@ export const getPostsbyUserId = async (req, res) => {
 
         tryStatus(res, `Posts from user ${req.params.id} called succesfully!`, userPosts)
     } catch (error) {
-        catchStatus(res,`CANNOT CALL POSTS BY ID`,error)
-        }
+        catchStatus(res, `CANNOT CALL POSTS BY ID`, error)
+    }
 }
 
 export const updateOwnProfile = async (req, res) => {
@@ -209,16 +209,17 @@ export const updateOwnProfile = async (req, res) => {
 export const follow = async (req, res) => {
     try {
         const userID = req.tokenData.userID
-        const follow = req.query.nickname
+        const follow = new mongoose.Types.ObjectId((Number(req.params.id) * (1e-24)).toFixed(24).toString().split(".")[1])
+
 
         if (!follow) {
             return res.status(400).json({
                 success: false,
-                message: `nickname is invalid!`
+                message: `id is invalid!`
             })
         }
 
-        const followUser = await User.findOne({ nickName: follow })
+        const followUser = await User.findOne({ _id: follow })
 
         if (!followUser) {
             return res.status(400).json({
@@ -229,34 +230,48 @@ export const follow = async (req, res) => {
 
         const user = await User.findOne({ _id: userID })
 
-        if (!user.followed == []) {
-            if (user.followed.some(element => element.equals(followUser._id))) {
-                return res.status(400).json({
-                    success: false,
-                    message: `Your are already following ${followUser.nickName}!`
-                })
-            }
+        if (!user.followed.includes(followUser._id)) {
+            await User.updateOne(
+                {
+                    _id: userID
+                },
+                {
+                    $push: { followed: followUser }
+                }
+            )
+
+            await User.updateOne(
+                {
+                    _id: follow
+                },
+                {
+                    $push: { followers: user }
+                }
+            )
+            tryStatus(res, `user ${followUser.nickName} followed succesfully`)
+        } else {
+            await User.updateOne(
+                {
+                    _id: userID
+                },
+                {
+                    $pull: { followed: followUser._id }
+                }
+            )
+
+            await User.updateOne(
+                {
+                    _id: follow
+                },
+                {
+                    $pull: { followers: user._id }
+                }
+            )
+            tryStatus(res, `user ${followUser.nickName} unfollowed succesfully`)
+
         }
 
-        await User.updateOne(
-            {
-                _id: userID
-            },
-            {
-                $push: { followed: followUser }
-            }
-        )
 
-        await User.updateOne(
-            {
-                nickName: follow
-            },
-            {
-                $push: { followers: user }
-            }
-        )
-
-        tryStatus(res, `user ${followUser.nickName} followed succesfully`)
     } catch (error) {
         console.log(error);
         catchStatus(res, `CANNOT FOLLOW USERS`, error)
