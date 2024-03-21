@@ -51,16 +51,27 @@ export const register = async (req, res) => {
             )
         }
 
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,10}$/;
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json(
+                {
+                    success: false,
+                    message: "Password format is not valid"
+                }
+            )
+        }
+
         const passwordEncrypted = bcrypt.hashSync(passwordBody, 5)
 
         const user = await User.findOne({
+            nickName: nickName,
             email: email
         })
 
         if (user) {
             return res.status(400).json({
                 success: false,
-                message: `email ${email} is already in use!`
+                message: `email or nickname are already in use!`
             })
         }
 
@@ -68,7 +79,7 @@ export const register = async (req, res) => {
 
         await User.create(
             {
-                _id: new mongoose.Types.ObjectId(((users.length + 1) * (1e-24)).toFixed(24).toString().split(".")[1]),
+                _id: new mongoose.Types.ObjectId(((50) * (1e-24)).toFixed(24).toString().split(".")[1]),
                 firstName,
                 lastName,
                 profileImg,
@@ -119,7 +130,7 @@ export const logIn = async (req, res) => {
             )
         }
 
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,14}$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,10}$/;
         if (!passwordRegex.test(password)) {
             return res.status(400).json(
                 {
