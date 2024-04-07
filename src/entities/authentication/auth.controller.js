@@ -52,7 +52,7 @@ export const register = async (req, res) => {
         }
 
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,10}$/;
-        if (!passwordRegex.test(password)) {
+        if (!passwordRegex.test(passwordBody)) {
             return res.status(400).json(
                 {
                     success: false,
@@ -79,7 +79,7 @@ export const register = async (req, res) => {
 
         await User.create(
             {
-                _id: new mongoose.Types.ObjectId(((50) * (1e-24)).toFixed(24).toString().split(".")[1]),
+                _id: new mongoose.Types.ObjectId(((users.length + 1) * (1e-24)).toFixed(24).toString().split(".")[1]),
                 firstName,
                 lastName,
                 profileImg,
@@ -101,7 +101,7 @@ export const register = async (req, res) => {
             email,
         }
 
-        tryStatus(res, `user ${nickName} registered!`, restProfile)
+        tryStatus(res, `user registered!`)
     } catch (error) {
         catchStatus(res, `CANNOT REGISTER`, error.message)
     }
@@ -174,6 +174,7 @@ export const logIn = async (req, res) => {
         const token = jwt.sign(
             {
                 userId: user.id,
+                nickName: user.nickName,
                 roleName: user.role
             },
             process.env.JWT_SECRET,

@@ -50,7 +50,6 @@ export const getPostbyId = async (req, res) => {
         catchStatus(req, 'CANNOT GET POSTS', error)
     }
 }
-
 export const getPostbyUserId = async (req, res) => {
     try {
         const userId = new mongoose.Types.ObjectId(((req.params.id) * (1e-24)).toFixed(24).toString().split(".")[1])
@@ -82,8 +81,6 @@ export const getPostbyUserId = async (req, res) => {
         catchStatus(res, 'CANNOT GET POSTS', error)
     }
 }
-
-
 export const newPost = async (req, res) => {
     try {
 

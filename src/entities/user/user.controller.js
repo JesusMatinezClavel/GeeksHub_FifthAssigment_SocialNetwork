@@ -3,6 +3,7 @@ import Post from "../post/Post.js";
 import User from "./User.js";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
+import dayjs from "dayjs";
 
 export const getUsers = async (req, res) => {
     try {
@@ -43,19 +44,17 @@ export const getOwnProfile = async (req, res) => {
     try {
         const userId = req.tokenData.userID
         const user = await User.findOne({ _id: userId })
-        const ownProfile = {
-            name: `${user.firstName} ${user.lastName}`,
-            profileImg: user.profileImg,
+        const userProfile = {
+            firstName: user.firstName,
+            lastName: user.lastName,
             nickName: user.nickName,
+            profileImg: user.profileImg,
+            bio: user.bio,
             age: user.age,
+            birthdate: dayjs(user.birthDate).format('YYYY-MM-DD'),
             email: user.email,
-            chats: user.chat.length,
-            liked: user.liked.length,
-            posts: user.posts.length,
-            followers: user.followers.length,
-            follows: user.followed.length
         }
-        tryStatus(res, `profile called succesfully`, ownProfile)
+        tryStatus(res, `profile called succesfully`, userProfile)
     } catch (error) {
         catchStatus(res, `CANNOT CALL OWN PROFILE`, error)
     }
@@ -75,16 +74,14 @@ export const getUserbyEmail = async (req, res) => {
         }
         const user = await User.findOne({ email: email })
         const userProfile = {
-            name: `${user.firstName} ${user.lastName}`,
-            profileImg: user.profileImg,
+            firstName: user.firstName,
+            lastName: user.lastName,
             nickName: user.nickName,
+            profileImg: user.profileImg,
+            bio: user.bio,
             age: user.age,
+            birthDate: user.birthDate,
             email: user.email,
-            chats: user.chat.length,
-            liked: user.liked.length,
-            posts: user.posts.length,
-            followers: user.followers.length,
-            follows: user.followed.length
         }
         tryStatus(res, `profile called succesfully`, userProfile)
     } catch (error) {
