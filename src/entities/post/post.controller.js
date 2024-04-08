@@ -27,7 +27,8 @@ export const getAllPosts = async (req, res) => {
 
 export const getPostbyId = async (req, res) => {
     try {
-        const postId = new mongoose.Types.ObjectId(((req.params.id) * (1e-24)).toFixed(24).toString().split(".")[1])
+        const postId = req.params.id
+        const userId = req.tokenData.userID
 
         if (!postId) {
             return res.status(400).json({
@@ -36,12 +37,23 @@ export const getPostbyId = async (req, res) => {
             })
         }
 
-        const post = await Post.findOne({ _id: postId })
+        const user = await User.findOne({ _id: userId })
+
+        if (!user.posts.includes(postId)) {
+            return res.status(400).json({
+                succes: false,
+                message: `This chat doesn't belong to you!`
+            })
+        }
+
+        const post = await Post.findOne({
+            _id: postId
+        })
 
         if (!post) {
             return res.status(400).json({
-                success: false,
-                message: `post ${req.params.id} doesn't exist!`
+                succes: false,
+                message: `chat doesn't exist!`
             })
         }
 
@@ -72,10 +84,10 @@ export const getPostbyUserId = async (req, res) => {
 
         let userPosts = []
         for (const element of user.posts) {
-            const userPost = await Post.findOne({_id: element})
+            const userPost = await Post.findOne({ _id: element })
             userPosts.push(userPost)
         }
-        
+
         tryStatus(res, `Post from ${user.nickName} called succesfully!`, userPosts)
     } catch (error) {
         catchStatus(res, 'CANNOT GET POSTS', error)

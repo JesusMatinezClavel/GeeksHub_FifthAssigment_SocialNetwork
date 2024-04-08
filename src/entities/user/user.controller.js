@@ -44,6 +44,13 @@ export const getOwnProfile = async (req, res) => {
     try {
         const userId = req.tokenData.userID
         const user = await User.findOne({ _id: userId })
+
+        if (!user) {
+            return res.status(400).json({
+                succes: false,
+                message: `user doesn't exist!`
+            })
+        }
         const userProfile = {
             firstName: user.firstName,
             lastName: user.lastName,
@@ -53,6 +60,12 @@ export const getOwnProfile = async (req, res) => {
             age: user.age,
             birthdate: dayjs(user.birthDate).format('YYYY-MM-DD'),
             email: user.email,
+            followers: user.followers,
+            followed: user.followed,
+            chat: user.chat,
+            comment: user.comment,
+            posts: user.posts,
+            liked: user.liked
         }
         tryStatus(res, `profile called succesfully`, userProfile)
     } catch (error) {
