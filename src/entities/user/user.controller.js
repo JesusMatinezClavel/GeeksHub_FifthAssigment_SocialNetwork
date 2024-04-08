@@ -418,14 +418,13 @@ export const getUserById = async (req, res) => {
             })
         }
 
-        const userId = new mongoose.Types.ObjectId((Number(id) * (1e-24)).toFixed(24).toString().split(".")[1])
 
-        const user = await User.findOne({ _id: userId })
+        const user = await User.findOne({ _id: id })
 
 
-        tryStatus(res, `profile updated succesfully`, user)
+        tryStatus(res, `user ${id} called succesfully`, user)
     } catch (error) {
-        catchStatus(res, `CANNOT UPDATE OWN PROFILE`, error)
+        catchStatus(res, `CANNOT CALL USER BY ID`, error)
     }
 
 }
