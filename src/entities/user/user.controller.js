@@ -59,7 +59,6 @@ export const getOwnProfile = async (req, res) => {
         catchStatus(res, `CANNOT CALL OWN PROFILE`, error)
     }
 }
-
 export const getUserbyEmail = async (req, res) => {
     try {
         const { email } = req.query
@@ -88,7 +87,6 @@ export const getUserbyEmail = async (req, res) => {
         catchStatus(res, `CANNOT CALL OWN PROFILE`, error)
     }
 }
-
 export const getPostsbyUserId = async (req, res) => {
     try {
         const userId = new mongoose.Types.ObjectId(((req.params.id) * (1e-24)).toFixed(24).toString().split(".")[1])
@@ -121,7 +119,6 @@ export const getPostsbyUserId = async (req, res) => {
         catchStatus(res, `CANNOT CALL POSTS BY ID`, error)
     }
 }
-
 export const updateOwnProfile = async (req, res) => {
     try {
         const userId = req.tokenData.userID
@@ -202,7 +199,6 @@ export const updateOwnProfile = async (req, res) => {
         catchStatus(res, `CANNOT UPDATE OWN PROFILE`, error)
     }
 }
-
 export const follow = async (req, res) => {
     try {
         const userID = req.tokenData.userID
@@ -274,7 +270,6 @@ export const follow = async (req, res) => {
         catchStatus(res, `CANNOT FOLLOW USERS`, error)
     }
 }
-
 export const unFollow = async (req, res) => {
     try {
         const userID = req.tokenData.userID
@@ -337,7 +332,6 @@ export const unFollow = async (req, res) => {
         catchStatus(res, `CANNOT UNFOLLOW USERS`, error)
     }
 }
-
 export const deleteUserbyId = async (req, res) => {
     try {
         const id = req.params.id
@@ -362,7 +356,6 @@ export const deleteUserbyId = async (req, res) => {
         catchStatus(res, `CANNOT DELETE USER`, error)
     }
 }
-
 export const updateRole = async (req, res) => {
     try {
         const id = req.params.id
@@ -412,4 +405,27 @@ export const updateRole = async (req, res) => {
     } catch (error) {
         catchStatus(res, `CANNOT UPDATE OWN PROFILE`, error)
     }
+}
+
+export const getUserById = async (req, res) => {
+    try {
+        const id = req.params.id
+
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                message: `id is not valid!`
+            })
+        }
+
+        const userId = new mongoose.Types.ObjectId((Number(id) * (1e-24)).toFixed(24).toString().split(".")[1])
+
+        const user = await User.findOne({ _id: userId })
+
+
+        tryStatus(res, `profile updated succesfully`, user)
+    } catch (error) {
+        catchStatus(res, `CANNOT UPDATE OWN PROFILE`, error)
+    }
+
 }
