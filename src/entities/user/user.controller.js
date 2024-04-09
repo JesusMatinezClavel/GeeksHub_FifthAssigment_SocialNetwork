@@ -39,11 +39,16 @@ export const getUsers = async (req, res) => {
         catchStatus(res, `CANNOT CALL USERS`, error)
     }
 }
-
 export const getOwnProfile = async (req, res) => {
     try {
         const userId = req.tokenData.userID
         const user = await User.findOne({ _id: userId })
+            .populate('posts')
+            .populate('chat')
+            .populate('followers')
+            .populate('followed')
+            .populate('comment')
+            .populate('liked')
 
         if (!user) {
             return res.status(400).json({
@@ -51,6 +56,7 @@ export const getOwnProfile = async (req, res) => {
                 message: `user doesn't exist!`
             })
         }
+
         const userProfile = {
             firstName: user.firstName,
             lastName: user.lastName,
