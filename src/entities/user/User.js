@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 
 const UserSchema = new Schema(
     {
@@ -29,7 +29,7 @@ const UserSchema = new Schema(
         },
         age: {
             type: Number,
-            require: false
+            required: false
         },
         email: {
             type: String,
@@ -39,7 +39,7 @@ const UserSchema = new Schema(
         password: {
             type: String,
             required: true,
-            Selection: false
+            Select: false
         },
         role: {
             type: String,

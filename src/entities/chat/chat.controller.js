@@ -58,7 +58,7 @@ export const getChatsById = async (req, res) => {
             })
         }
 
-        tryStatus(res, `Own chats called succesfully!`, chat)
+        tryStatus(res, `Chat ${chatId} called succesfully!`, chat)
     } catch (error) {
         catchStatus(req, 'CANNOT GET CHAT', error)
     }

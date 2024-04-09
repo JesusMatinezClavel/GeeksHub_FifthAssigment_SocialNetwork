@@ -43,12 +43,14 @@ export const getOwnProfile = async (req, res) => {
     try {
         const userId = req.tokenData.userID
         const user = await User.findOne({ _id: userId })
+            .populate('comment')
             .populate('posts')
             .populate('chat')
             .populate('followers')
             .populate('followed')
-            .populate('comment')
             .populate('liked')
+
+        console.log(user);
 
         if (!user) {
             return res.status(400).json({
