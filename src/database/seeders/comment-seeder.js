@@ -31,7 +31,7 @@ export const commentSeeder = async () => {
                 _id: comments[i].postTarget
             },
             {
-                $push: { comment: comments[i]._id }
+                $push: { comments: comments[i]._id }
             },
             {
                 new: true

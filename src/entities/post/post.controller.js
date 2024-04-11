@@ -17,7 +17,7 @@ export const getPost = async (req, res) => {
 
 export const getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.find()
+        const posts = await Post.find().populate('likes')
 
         tryStatus(res, 'All posts called succesfully!', posts)
     } catch (error) {
