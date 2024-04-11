@@ -128,7 +128,7 @@ export const newPost = async (req, res) => {
         })
 
         const newPost = {
-            author: user.nickName,
+            author: user._id,
             title,
             media,
             description

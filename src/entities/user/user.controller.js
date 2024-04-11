@@ -49,9 +49,7 @@ export const getOwnProfile = async (req, res) => {
             .populate('followers')
             .populate('followed')
             .populate('liked')
-
-        console.log(user);
-
+            
         if (!user) {
             return res.status(400).json({
                 succes: false,
