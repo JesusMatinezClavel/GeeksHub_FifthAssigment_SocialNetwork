@@ -10,7 +10,7 @@ export const catchStatus = (res, message,error) => {
 
 
 // Function to throw a Response in the Try
-export const tryStatus = (res, message, ...result) => {
+export const tryStatus = (res, message, result) => {
     res.status(200).json({
         success: true,
         message: message,

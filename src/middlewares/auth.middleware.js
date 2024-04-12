@@ -8,7 +8,7 @@ export const auth = (req,res,next) => {
         if(!token){
             return res.status(400).json({
                 success: false,
-                message: `no token found!`
+                message: `TOKEN NOT FOUND`
             })
         }
 
