@@ -117,13 +117,12 @@ export const newPost = async (req, res) => {
 
         const user = await User.findOne({ _id: userId })
         const posts = await Post.find()
-        console.log(posts.length);
 
         const postCreated = await Post.create({
             _id: new mongoose.Types.ObjectId(((posts.length + 1) * (1e-24)).toFixed(24).toString().split(".")[1]),
             title: title,
             description: description,
-            author: user,
+            author: user._id,
             media: media
         })
 
@@ -149,11 +148,10 @@ export const newPost = async (req, res) => {
         catchStatus(res, 'CANNOT CREATE POST', error)
     }
 }
-
 export const addRemoveLike = async (req, res) => {
     try {
 
-        const postId = new mongoose.Types.ObjectId(((req.params.id) * (1e-24)).toFixed(24).toString().split(".")[1])
+        const postId = req.params.id
         const userId = req.tokenData.userID
 
         if (!postId) {
@@ -222,7 +220,7 @@ export const addRemoveLike = async (req, res) => {
 export const deletePostbyId = async (req, res) => {
     try {
 
-        const postId = new mongoose.Types.ObjectId(((req.params.id) * (1e-24)).toFixed(24).toString().split(".")[1])
+        const postId = req.params.id
         const userId = req.tokenData.userID
 
         if (!postId) {
@@ -254,7 +252,16 @@ export const deletePostbyId = async (req, res) => {
         await Post.deleteOne(
             {
                 _id: postId,
-                author: userId
+                author: userId._id
+            }
+        )
+
+        await User.findOneAndUpdate(
+            {
+                _id: user._id
+            },
+            {
+                $pull: { posts: postId }
             }
         )
 
@@ -270,9 +277,8 @@ export const updateOwnPost = async (req, res) => {
     try {
 
         let { id, title, description, media } = req.body
-        const postId = new mongoose.Types.ObjectId(((Number(id)) * (1e-24)).toFixed(24).toString().split(".")[1])
+        const postId = id
         const userId = req.tokenData.userID
-        console.log(postId);
 
         if (media !== "") {
             if (typeof (media) !== 'string' || !media.match(/\.(jpeg|jpg|gif|png)$/i)) {
@@ -306,7 +312,15 @@ export const updateOwnPost = async (req, res) => {
         }
         if (media === "") {
             media = post.media
+        } else {
+            if (typeof (media) !== 'string' || !media.match(/\.(jpeg|jpg|gif|png)$/i)) {
+                return res.status(400).json({
+                    success: false,
+                    message: `The profileImg has no valid format!`
+                })
+            }
         }
+
         if (description === "") {
             description = post.description
         }
@@ -323,11 +337,8 @@ export const updateOwnPost = async (req, res) => {
             }
         )
 
-        const updatedPost = await Post.findOne({ _id: postId })
-
-
-
-        tryStatus(res, `Post ${req.body.id} updated!`, updatedPost)
+        const newPost = await Post.findOne({ _id: postId })
+        tryStatus(res, `Post ${req.body.id} updated!`, newPost)
     } catch (error) {
         catchStatus(res, 'CANNOT UPDATE POST', error)
     }

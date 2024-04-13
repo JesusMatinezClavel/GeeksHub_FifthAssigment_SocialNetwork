@@ -141,7 +141,7 @@ export const getPostsbyUserId = async (req, res) => {
 export const updateOwnProfile = async (req, res) => {
     try {
         const userId = req.tokenData.userID
-        let { firstName, lastName, profileImg, bio, nickName, email, password, passwordCheck } = req.body
+        let { firstName, lastName, profileImg, bio, nickName, password, passwordCheck } = req.body
         const userBefore = await User.findOne({ _id: userId })
 
         if (firstName === "") {
@@ -150,7 +150,7 @@ export const updateOwnProfile = async (req, res) => {
         if (lastName === "") {
             lastName = userBefore.lastName
         }
-        if (profileImg === "") {
+        if (profileImg === "" || profileImg === userBefore.profileImg) {
             profileImg = userBefore.profileImg
         }
         if (bio === "") {
@@ -158,18 +158,6 @@ export const updateOwnProfile = async (req, res) => {
         }
         if (nickName === "") {
             nickName = userBefore.nickName
-        }
-        if (email === "") {
-            email = userBefore.email
-        }
-        const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
-        if (!validEmail.test(email)) {
-            return res.status(400).json(
-                {
-                    success: false,
-                    message: "format email invalid"
-                }
-            )
         }
         if (password === "") {
             password = userBefore.password
@@ -179,11 +167,16 @@ export const updateOwnProfile = async (req, res) => {
                 message: `passwordCheck is different from password!`
             })
         }
-
+        if (profileImg !== "") {
+            if (typeof (profileImg) !== 'string' || !profileImg.match(/\.(jpeg|jpg|gif|png)$/i)) {
+                return res.status(400).json({
+                    success: false,
+                    message: `The profileImg has no valid format!`
+                })
+            }
+        }
 
         const passwordHash = bcrypt.hashSync(password, 8)
-
-
 
         await User.findOneAndUpdate(
             {
@@ -195,25 +188,10 @@ export const updateOwnProfile = async (req, res) => {
                 nickName: nickName,
                 profileImg: profileImg,
                 bio: bio,
-                email: email,
                 password: passwordHash,
             }
         )
-
-        const userAfter = await User.findOne({ _id: userId })
-        const userUpdate = {
-            name: `${userAfter.firstName} ${userAfter.lastName}`,
-            profileImg: userAfter.profileImg,
-            nickName: userAfter.nickName,
-            age: userAfter.age,
-            email: userAfter.email,
-            chats: userAfter.chat.length,
-            liked: userAfter.liked.length,
-            posts: userAfter.posts.length,
-            followers: userAfter.followers.length,
-            follows: userAfter.followed.length
-        }
-        tryStatus(res, `profile updated succesfully`, userUpdate)
+        tryStatus(res, `profile updated succesfully`)
     } catch (error) {
         catchStatus(res, `CANNOT UPDATE OWN PROFILE`, error)
     }

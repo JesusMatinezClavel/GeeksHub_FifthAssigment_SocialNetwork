@@ -60,6 +60,14 @@ export const register = async (req, res) => {
                 }
             )
         }
+        if (profileImg !== "") {
+            if (typeof (profileImg) !== 'string' || !profileImg.match(/\.(jpeg|jpg|gif|png)$/i)) {
+                return res.status(400).json({
+                    success: false,
+                    message: `The profileImg has no valid format!`
+                })
+            }
+        }
 
         const passwordEncrypted = bcrypt.hashSync(passwordBody, 5)
 

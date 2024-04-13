@@ -17,7 +17,6 @@ export const getFileAvatar = async (req, res) => {
         }
 
         const fileStream = fs.createReadStream(filePath)
-        console.log(fileStream);
         fileStream.pipe(res)
     } catch (error) {
         catchStatus(res, 'CANNOT GET FILE', error)
@@ -34,7 +33,6 @@ export const getFilePost = async (req, res) => {
         }
 
         const fileStream = fs.createReadStream(filePath)
-        console.log(fileStream);
         fileStream.pipe(res)
     } catch (error) {
         catchStatus(res, 'CANNOT GET FILE', error)
