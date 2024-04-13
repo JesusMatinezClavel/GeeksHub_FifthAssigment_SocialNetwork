@@ -29,7 +29,7 @@ export const getUsers = async (req, res) => {
         // Si Skip sobrepasa la cantidad de Users dará un error
         if (skip >= lengUsers.length) {
             return res.status(400).json({
-                succes: false,
+                success: false,
                 message: `There are no more users to call`
             })
         }

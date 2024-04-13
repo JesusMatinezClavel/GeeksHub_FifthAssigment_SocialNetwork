@@ -14,17 +14,40 @@ export const getPost = async (req, res) => {
         catchStatus(req, 'CANNOT GET POSTS', error)
     }
 }
-
 export const getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.find().populate('likes')
+        // Ponemos un límite a elegir en el Query (siendo este 5 si no se especifica)
+        let limit = Number(req.query.limit) || 5
+        // Ponemos la página que queremos ver (siendo esta la 1 si no se especifica)
+        const page = Number(req.query.page) || 1
+        // Hacemos un cálculo por el cual podemos elegir los Users a mostrar dependiendo del limit
+        const skip = (page - 1) * limit
+        const lengPosts = await Post.find()
 
+        // Hacemos validaciones a estos 3 valores para asegurarnos de que son valores válidos
+        if (limit <= 0 || page <= 0 || !Number.isInteger(limit) || !Number.isInteger(page)) {
+            return res.status(400).json({
+                succes: false,
+                message: `Limit or page selected are not valid`
+            })
+        }
+        // El límite máximo será 20
+        if (limit > 20) {
+            limit = 20
+        }
+        // Si Skip sobrepasa la cantidad de Users dará un error
+        if (skip >= lengPosts.length) {
+            return res.status(400).json({
+                succes: false,
+                message: `There are no more users to call`
+            })
+        }
+        const posts = await Post.find().populate('likes')
         tryStatus(res, 'All posts called succesfully!', posts)
     } catch (error) {
         catchStatus(req, 'CANNOT GET POSTS', error)
     }
 }
-
 export const getPostbyId = async (req, res) => {
     try {
         const postId = req.params.id
@@ -58,6 +81,31 @@ export const getPostbyId = async (req, res) => {
         }
 
         tryStatus(res, `Post ${req.params.id} called succesfully!`, post)
+    } catch (error) {
+        catchStatus(req, 'CANNOT GET POSTS', error)
+    }
+}
+export const getAuthor = async (req, res) => {
+    try {
+        const postId = req.params.id
+        const userId = req.tokenData.userID
+
+        if (!postId) {
+            return res.status(400).json({
+                succes: false,
+                message: `post id is not valid!`
+            })
+        }
+
+        const post = await Post.findOne({
+            _id: postId
+        })
+
+        const user = await User.findOne({
+            _id: post.author
+        })
+
+        tryStatus(res, `author ${post.author} called succesfully!`, user)
     } catch (error) {
         catchStatus(req, 'CANNOT GET POSTS', error)
     }
@@ -266,6 +314,46 @@ export const deletePostbyId = async (req, res) => {
         )
 
 
+
+        tryStatus(res, `Post ${req.params.id} deleted!`)
+    } catch (error) {
+        catchStatus(res, 'CANNOT DELETE POST', error)
+    }
+}
+
+export const deletePostSuperadmin = async (req, res) => {
+    try {
+        const postId = req.params.id
+        const userRole = req.tokenData.roleName
+
+        if(userRole!=='superadmin'){
+            return res.status(400).json({
+                success: false,
+                message: `You are not the superadmin!`
+            })
+        }
+
+        if (!postId) {
+            return res.status(400).json({
+                success: false,
+                message: `Invalid post ID!`
+            })
+        }
+
+        const post = await Post.findOne({ _id: postId })
+
+        if (!post) {
+            return res.status(400).json({
+                success: false,
+                message: `post ${req.params.id} doesn't exist!`
+            })
+        }
+
+        await Post.deleteOne(
+            {
+                _id: postId,
+            }
+        )
 
         tryStatus(res, `Post ${req.params.id} deleted!`)
     } catch (error) {
