@@ -167,7 +167,6 @@ export const newPost = async (req, res) => {
         const posts = await Post.find()
 
         const postCreated = await Post.create({
-            _id: new mongoose.Types.ObjectId(((posts.length + 1) * (1e-24)).toFixed(24).toString().split(".")[1]),
             title: title,
             description: description,
             author: user._id,

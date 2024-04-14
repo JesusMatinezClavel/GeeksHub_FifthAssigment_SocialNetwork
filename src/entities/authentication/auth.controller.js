@@ -87,7 +87,6 @@ export const register = async (req, res) => {
 
         await User.create(
             {
-                _id: new mongoose.Types.ObjectId(((users.length + 1) * (1e-24)).toFixed(24).toString().split(".")[1]),
                 firstName,
                 lastName,
                 profileImg,
